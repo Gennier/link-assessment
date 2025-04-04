@@ -1,6 +1,7 @@
 import { BookingStatus, BookingType } from "@prisma/client";
 import prisma from "../../../prisma/prisma";
 import type { IListMachine } from "./machines.interfaces";
+import { BadRequestError } from "../../commons/errors/errors";
 
 export class MachineService {
   async findAll(query: IListMachine) {
@@ -18,7 +19,7 @@ export class MachineService {
     );
 
     if (startDateCooldown > endDateCooldown) {
-      throw new Error("Start date must be before end date");
+      throw new BadRequestError("Start date must be before end date");
     }
 
     // To fetch all overlapping machines

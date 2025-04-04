@@ -2,6 +2,7 @@ import prisma from "../../../prisma/prisma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import type { ILogin, IRegister } from "./auth.interfaces";
+import { ConflictError, UnauthorizedError } from "../../commons/errors/errors";
 
 export class AuthService {
   async register(data: IRegister) {
@@ -11,7 +12,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new Error("User already exists");
+      throw new ConflictError("User already exists");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -38,13 +39,13 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error("Invalid credentials");
+      throw new UnauthorizedError("Invalid credentials");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      throw new Error("Invalid credentials");
+      throw new UnauthorizedError("Invalid credentials");
     }
 
     const token = this.generateToken(user.id);

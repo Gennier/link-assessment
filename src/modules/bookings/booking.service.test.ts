@@ -2,6 +2,7 @@ import { describe, test, expect, mock, beforeEach, afterEach } from "bun:test";
 import { BookingService } from "./bookings.services";
 import { BookingStatus, BookingType } from "@prisma/client";
 import prisma from "../../../prisma/prisma";
+import { ForbiddenError, NotFoundError } from "../../commons/errors/errors";
 
 // Improvements: Add test for integration test with prisma
 
@@ -87,9 +88,9 @@ describe("BookingService", () => {
         { id: "booking-id" },
       ]);
 
-      await expect(bookingService.create(bookingData, userId)).rejects.toThrow(
-        "Instructor is not available"
-      );
+      expect(async () => {
+        await bookingService.create(bookingData, userId);
+      }).toThrow(new ForbiddenError("Instructor is not available"));
     });
 
     test("should throw error when machine is not available", async () => {
@@ -108,9 +109,9 @@ describe("BookingService", () => {
         { id: "booking-id" },
       ]);
 
-      await expect(bookingService.create(bookingData, userId)).rejects.toThrow(
-        "Machine is not available"
-      );
+      expect(async () => {
+        await bookingService.create(bookingData, userId);
+      }).toThrow(new ForbiddenError("Machine is not available"));
     });
 
     test("should throw error when instructor is not found", async () => {
@@ -125,9 +126,9 @@ describe("BookingService", () => {
       // Mock instructor not found
       (prisma.instructor.findUnique as any).mockImplementationOnce(() => null);
 
-      await expect(bookingService.create(bookingData, userId)).rejects.toThrow(
-        "Instructor not found"
-      );
+      expect(async () => {
+        await bookingService.create(bookingData, userId);
+      }).toThrow(new NotFoundError("Instructor"));
     });
 
     test("should throw error when machine is not found", async () => {
@@ -143,9 +144,9 @@ describe("BookingService", () => {
       (prisma.booking.findMany as any).mockImplementationOnce(() => []); // No instructor bookings found
       (prisma.machine.findUnique as any).mockImplementationOnce(() => null); // Machine not found
 
-      await expect(bookingService.create(bookingData, userId)).rejects.toThrow(
-        "Machine not found"
-      );
+      expect(async () => {
+        await bookingService.create(bookingData, userId);
+      }).toThrow(new NotFoundError("Machine"));
     });
   });
 });

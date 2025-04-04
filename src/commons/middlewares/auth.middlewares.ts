@@ -1,20 +1,21 @@
 import { Elysia, type Context } from "elysia";
 import jwt from "jsonwebtoken";
 import prisma from "../../../prisma/prisma";
+import { UnauthorizedError } from "../errors/errors";
 
 export const authenticateMiddleware = async (context: Context) => {
   const authBearerHeader = context.request.headers.get("authorization");
 
   if (!authBearerHeader || !authBearerHeader.startsWith("Bearer ")) {
     context.set.status = 401;
-    throw new Error("Unauthorized: Missing or invalid token");
+    throw new UnauthorizedError("Invalid token");
   }
 
   const token = authBearerHeader.split(" ")[1];
 
   if (!token) {
     context.set.status = 401;
-    throw new Error("Unauthorized: Invalid token");
+    throw new UnauthorizedError("Invalid token");
   }
 
   try {
@@ -24,8 +25,7 @@ export const authenticateMiddleware = async (context: Context) => {
     ) as any;
 
     if (!decoded.userId) {
-      context.set.status = 401;
-      throw new Error("Unauthorized: Invalid token");
+      throw new Error();
     }
 
     const user = await prisma.user.findUnique({
@@ -35,14 +35,13 @@ export const authenticateMiddleware = async (context: Context) => {
     });
 
     if (!user) {
-      context.set.status = 401;
-      throw new Error("Unauthorized: Invalid token");
+      throw new Error();
     }
 
     // @ts-ignore
     context.user = user;
   } catch (error) {
     context.set.status = 401;
-    throw new Error("Unauthorized: Invalid token");
+    throw new UnauthorizedError("Invalid token");
   }
 };

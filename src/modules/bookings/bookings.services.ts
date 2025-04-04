@@ -6,6 +6,7 @@ import {
 } from "@prisma/client";
 import prisma from "../../../prisma/prisma";
 import type { ICreateBooking, IListBooking } from "./bookings.interfaces";
+import { ForbiddenError, NotFoundError } from "../../commons/errors/errors";
 
 export class BookingService {
   async create(data: ICreateBooking, userId: string) {
@@ -74,7 +75,7 @@ export class BookingService {
     });
 
     if (!instructor) {
-      throw new Error("Instructor not found");
+      throw new NotFoundError("Instructor");
     }
 
     // To fetch all overlapping instructors
@@ -89,7 +90,7 @@ export class BookingService {
     });
 
     if (bookings.length > 0) {
-      throw new Error("Instructor is not available");
+      throw new ForbiddenError("Instructor is not available");
     }
 
     return instructor;
@@ -105,7 +106,7 @@ export class BookingService {
     });
 
     if (!machine) {
-      throw new Error("Machine not found");
+      throw new NotFoundError("Machine");
     }
 
     // 10mins cooldown between bookings
@@ -125,7 +126,7 @@ export class BookingService {
     });
 
     if (bookings.length > 0) {
-      throw new Error("Machine is not available");
+      throw new ForbiddenError("Machine is not available");
     }
 
     return machine;

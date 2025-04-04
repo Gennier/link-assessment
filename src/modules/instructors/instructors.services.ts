@@ -1,6 +1,7 @@
 import { BookingStatus, BookingType } from "@prisma/client";
 import prisma from "../../../prisma/prisma";
 import type { IListInstructor } from "./instructors.interfaces";
+import { BadRequestError } from "../../commons/errors/errors";
 
 export class InstructorService {
   async findAll(query: IListInstructor) {
@@ -8,9 +9,9 @@ export class InstructorService {
 
     // Improvement: to add validation for startDate and endDate
     // Improvement: to allow only startDate as well as endDate as well as both
-    console.log(startDate, endDate);
+
     if (startDate > endDate) {
-      throw new Error("Start date must be before end date");
+      throw new BadRequestError("Start date must be before end date");
     }
 
     // To fetch all overlapping instructors

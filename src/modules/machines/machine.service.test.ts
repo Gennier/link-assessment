@@ -1,7 +1,8 @@
 import { describe, test, expect, mock, beforeEach, afterEach } from "bun:test";
 import { MachineService } from "./machines.services";
-import { BookingType, MachineType } from "@prisma/client";
+import { BookingStatus, BookingType, MachineType } from "@prisma/client";
 import prisma from "../../../prisma/prisma";
+import { BadRequestError } from "../../commons/errors/errors";
 
 const mockedMachine1 = {
   id: "machine-1",
@@ -77,6 +78,7 @@ describe("MachineService", () => {
       expect(prisma.booking.findMany).toHaveBeenCalledWith({
         where: {
           type: BookingType.MACHINE,
+          status: BookingStatus.CONFIRMED,
           startDate: { lte: expect.any(Date) },
           endDate: { gte: expect.any(Date) },
         },
@@ -138,9 +140,9 @@ describe("MachineService", () => {
         endDate: new Date("2023-01-01T12:00:00Z"),
       };
 
-      await expect(machineService.findAll(query)).rejects.toThrow(
-        "Start date must be before end date"
-      );
+      expect(async () => {
+        await machineService.findAll(query);
+      }).toThrow(new BadRequestError("Start date must be before end date"));
     });
   });
 });
