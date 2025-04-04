@@ -77,10 +77,12 @@ export class BookingService {
       throw new Error("Instructor not found");
     }
 
+    // To fetch all overlapping instructors
     const bookings = await prisma.booking.findMany({
       where: {
         entityId: instructorId,
         type: BookingType.INSTRUCTOR,
+        status: BookingStatus.CONFIRMED,
         startDate: { lte: endDate },
         endDate: { gte: startDate },
       },
@@ -107,13 +109,16 @@ export class BookingService {
     }
 
     // 10mins cooldown between bookings
+    // With this in place, it will force instructor to have 10mins gap between bookings as well, if machine is booked
     const startDateCooldown = new Date(startDate.getTime() - 10 * 60 * 1000);
     const endDateCooldown = new Date(endDate.getTime() + 10 * 60 * 1000);
 
+    // To fetch all overlapping machines
     const bookings = await prisma.booking.findMany({
       where: {
         entityId: machineId,
         type: BookingType.MACHINE,
+        status: BookingStatus.CONFIRMED,
         startDate: { lte: endDateCooldown },
         endDate: { gte: startDateCooldown },
       },

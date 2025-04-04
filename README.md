@@ -2,6 +2,12 @@
 
 This project is a RESTful API built with Bun, Elysia, and Prisma.
 
+Requirements:
+
+- To create Booking with no overlapping on instructor and machine
+- Allow machine to have a 10mins cooldown time between bookings
+- Assume that the booking must have both machine and instructor
+
 ## Prerequisites
 
 - [Bun](https://bun.sh/) (latest version)

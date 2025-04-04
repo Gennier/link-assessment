@@ -1,4 +1,4 @@
-import { BookingType } from "@prisma/client";
+import { BookingStatus, BookingType } from "@prisma/client";
 import prisma from "../../../prisma/prisma";
 import type { IListInstructor } from "./instructors.interfaces";
 
@@ -13,9 +13,11 @@ export class InstructorService {
       throw new Error("Start date must be before end date");
     }
 
+    // To fetch all overlapping instructors
     const bookedInstructors = await prisma.booking.findMany({
       where: {
         type: BookingType.INSTRUCTOR,
+        status: BookingStatus.CONFIRMED,
         startDate: { lte: endDate },
         endDate: { gte: startDate },
       },

@@ -1,4 +1,4 @@
-import { BookingType } from "@prisma/client";
+import { BookingStatus, BookingType } from "@prisma/client";
 import prisma from "../../../prisma/prisma";
 import type { IListMachine } from "./machines.interfaces";
 
@@ -21,9 +21,11 @@ export class MachineService {
       throw new Error("Start date must be before end date");
     }
 
+    // To fetch all overlapping machines
     const bookedMachines = await prisma.booking.findMany({
       where: {
         type: BookingType.MACHINE,
+        status: BookingStatus.CONFIRMED,
         startDate: { lte: endDateCooldown },
         endDate: { gte: startDateCooldown },
       },
