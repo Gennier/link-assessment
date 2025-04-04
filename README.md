@@ -40,6 +40,8 @@ bun prisma:deploy
 
 # Seed the database (Must run this to get the initial data)
 bun seed
+
+# Checkout the ./prisma/schema.prisma file to see the data model
 ```
 
 ## Development
@@ -132,3 +134,4 @@ POST /bookings
 
 - I use a modularized file structure to keep the code organized and easy to maintain. Inspired by Nestjs
 - Authentication is handled using JWT, and is applied to all endpoints that require authentication
+- Checkout the schema.prisma file to see the data model
