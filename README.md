@@ -1,5 +1,8 @@
 # Link Assessment API
 
+Hi there, this is the best that i could come out within the (3 days)given time.
+Please remember to run the seed first. Enjoy!!
+
 This project is a RESTful API built with Bun, Elysia, and Prisma.
 
 Requirements:
