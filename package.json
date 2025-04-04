@@ -1,0 +1,32 @@
+{
+  "name": "link-assessment",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/bun": "latest",
+    "prisma": "^6.5.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@elysiajs/jwt": "^1.2.0",
+    "@prisma/client": "^6.5.0",
+    "@types/jsonwebtoken": "^9.0.9",
+    "bcrypt": "^5.1.1",
+    "elysia": "^1.2.25",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "scripts": {
+    "dev": "bun --watch index.ts",
+    "start": "bun run index.ts",
+    "test": "bun test",
+    "seed": "bun prisma/seed.ts",
+    "prisma:format": "bunx prisma format",
+    "prisma:generate": "bunx prisma generate",
+    "prisma:migration": "bunx prisma migrate dev --create-only",
+    "prisma:deploy": "bunx prisma migrate deploy"
+  }
+}

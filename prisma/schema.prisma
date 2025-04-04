@@ -1,0 +1,85 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [uuid_ossp(map: "uuid-ossp")]
+}
+
+enum MachineType {
+  BENCH_PRESS           @map("bench_press")
+  DUMBBELL              @map("dumbbell")
+  BARBELL               @map("barbell")
+  SQUAT_MACHINE         @map("squat_machine")
+  LEG_PRESS_MACHINE     @map("leg_press_machine")
+  LEG_EXTENSION_MACHINE @map("leg_extension_machine")
+  LEG_CURL_MACHINE      @map("leg_curl_machine")
+}
+
+enum BookingStatus {
+  PENDING   @map("pending")
+  CONFIRMED @map("confirmed")
+  CANCELLED @map("cancelled")
+}
+
+enum BookingType {
+  INSTRUCTOR @map("instructor")
+  MACHINE    @map("machine")
+}
+
+model User {
+  id          String    @id @default(dbgenerated("uuid_generate_v4()")) @db.VarChar(255)
+  name        String    @db.VarChar(255)
+  email       String    @unique @db.VarChar(255)
+  password    String    @db.VarChar(255)
+  phoneNumber String    @map("phone_number") @db.VarChar(255)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  @@map(name: "users")
+}
+
+model Machine {
+  id          String        @id @default(dbgenerated("uuid_generate_v4()")) @db.VarChar(255)
+  name        String        @db.VarChar(255)
+  type        MachineType
+  location    String        @db.VarChar(255)
+  description String        @db.Text()
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  deletedAt   DateTime?     @map("deleted_at")
+
+  @@map(name: "machines")
+}
+
+model Instructor {
+  id          String           @id @default(dbgenerated("uuid_generate_v4()")) @db.VarChar(255)
+  name        String           @db.VarChar(255)
+  email       String           @unique @db.VarChar(255)
+  phoneNumber String           @map("phone_number") @db.VarChar(255)
+  ratePerHour Decimal          @map("rate_per_hour") @db.Decimal(10, 2)
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+  deletedAt   DateTime?        @map("deleted_at")
+
+  @@map(name: "instructors")
+}
+
+model Booking {
+  id        String        @id @default(dbgenerated("uuid_generate_v4()")) @db.VarChar(255)
+  userId    String        @db.VarChar(255)
+  entityId  String        @db.VarChar(255)
+  type      BookingType
+  status    BookingStatus
+  startDate DateTime      @map("start_date")
+  endDate   DateTime      @map("end_date")
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+  deletedAt DateTime?     @map("deleted_at")
+
+  @@map(name: "bookings")
+}
