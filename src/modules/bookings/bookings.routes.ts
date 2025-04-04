@@ -13,9 +13,6 @@ import { authenticateMiddleware } from "../../commons/middlewares/auth.middlewar
 const bookingService = new BookingService();
 
 export const bookingRoutes = new Elysia({ prefix: "/bookings" })
-  .derive(async (context) => {
-    return await authenticateMiddleware(context);
-  })
   .get(
     "/",
     ({ query }: { query: IListBooking }) => bookingService.findAll(query),
@@ -28,6 +25,9 @@ export const bookingRoutes = new Elysia({ prefix: "/bookings" })
     ({ body, user }: { body: ICreateBooking; user: User }) =>
       bookingService.create(body, user.id),
     {
+      beforeHandle: async (context) => {
+        return await authenticateMiddleware(context);
+      },
       body: CreateBookingDto,
     }
   );

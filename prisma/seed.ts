@@ -1,11 +1,27 @@
 import { PrismaClient, MachineType } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
 async function main() {
   // Clear existing data
+  await prisma.user.deleteMany({});
   await prisma.instructor.deleteMany({});
   await prisma.machine.deleteMany({});
+
+  // Seed Test User
+  const hashedPassword = await bcrypt.hash("password123", 10);
+
+  await prisma.user.create({
+    data: {
+      name: "Test User",
+      email: "test@example.com",
+      password: hashedPassword,
+      phoneNumber: "6011333333",
+    },
+  });
+
+  console.log("Test user seeded successfully");
 
   // Seed Machines
   const machines = [

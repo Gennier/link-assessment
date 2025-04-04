@@ -37,7 +37,6 @@ describe("BookingService", () => {
 
   describe("create", () => {
     test("should create bookings for both instructor and machine", async () => {
-      // Arrange
       const bookingData = {
         instructorId: "instructor-id",
         machineId: "machine-id",
@@ -46,10 +45,8 @@ describe("BookingService", () => {
       };
       const userId = "user-id";
 
-      // Act
       const result = await bookingService.create(bookingData, userId);
 
-      // Assert
       expect(result).toEqual({ count: 2 });
       expect(prisma.booking.createMany).toHaveBeenCalledTimes(1);
       expect(prisma.booking.createMany).toHaveBeenCalledWith({
@@ -75,7 +72,6 @@ describe("BookingService", () => {
     });
 
     test("should throw error when instructor is not available", async () => {
-      // Arrange
       const bookingData = {
         instructorId: "instructor-id",
         machineId: "machine-id",
@@ -89,14 +85,12 @@ describe("BookingService", () => {
         { id: "booking-id" },
       ]);
 
-      // Act & Assert
       await expect(bookingService.create(bookingData, userId)).rejects.toThrow(
         "Instructor is not available"
       );
     });
 
     test("should throw error when machine is not available", async () => {
-      // Arrange
       const bookingData = {
         instructorId: "instructor-id",
         machineId: "machine-id",
@@ -112,14 +106,12 @@ describe("BookingService", () => {
         { id: "booking-id" },
       ]);
 
-      // Act & Assert
       await expect(bookingService.create(bookingData, userId)).rejects.toThrow(
         "Machine is not available"
       );
     });
 
     test("should throw error when instructor is not found", async () => {
-      // Arrange
       const bookingData = {
         instructorId: "non-existent-id",
         machineId: "machine-id",
@@ -131,14 +123,12 @@ describe("BookingService", () => {
       // Mock instructor not found
       (prisma.instructor.findUnique as any).mockImplementationOnce(() => null);
 
-      // Act & Assert
       await expect(bookingService.create(bookingData, userId)).rejects.toThrow(
         "Instructor not found"
       );
     });
 
     test("should throw error when machine is not found", async () => {
-      // Arrange
       const bookingData = {
         instructorId: "instructor-id",
         machineId: "non-existent-id",
@@ -149,9 +139,8 @@ describe("BookingService", () => {
 
       // Instructor lookup succeeds, but machine lookup fails
       (prisma.booking.findMany as any).mockImplementationOnce(() => []); // No instructor bookings found
-      (prisma.machine.findUnique as any).mockImplementationOnce(() => null);
+      (prisma.machine.findUnique as any).mockImplementationOnce(() => null); // Machine not found
 
-      // Act & Assert
       await expect(bookingService.create(bookingData, userId)).rejects.toThrow(
         "Machine not found"
       );
