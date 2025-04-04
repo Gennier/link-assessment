@@ -3,6 +3,8 @@ import { BookingService } from "./bookings.services";
 import { BookingStatus, BookingType } from "@prisma/client";
 import prisma from "../../../prisma/prisma";
 
+// Improvements: Add test for integration test with prisma
+
 // Mocking for prisma, with default values
 mock.module("../../../prisma/prisma", () => {
   return {
