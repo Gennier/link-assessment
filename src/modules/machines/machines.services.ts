@@ -23,6 +23,8 @@ export class MachineService {
     }
 
     // To fetch all overlapping machines
+    // If user search 8AM to 12PM, but there is a booked machine between 11AM to 1PM, then that machien will not be returned
+    // Solution: To maybe list all and return their booked times to user, so frontend can grey out those booked machines
     const bookedMachines = await prisma.booking.findMany({
       where: {
         type: BookingType.MACHINE,

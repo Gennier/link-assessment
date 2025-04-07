@@ -100,6 +100,9 @@ POST /auth/login
 - `GET /machines` - Get all machines
 
 ```bash
+# If user search 8AM to 12PM, but there is a booked machine between 11AM to 1PM, then that machine will not be returned
+# Solution: To maybe list all and return their booked times to user, so frontend can grey out those booked machines
+
 # Request Query
 GET /machines?startDate=2025-04-03T11:00:00Z&endDate=2025-04-03T13:00:00Z
 ```
@@ -107,6 +110,9 @@ GET /machines?startDate=2025-04-03T11:00:00Z&endDate=2025-04-03T13:00:00Z
 - `GET /instructors` - Get all instructors
 
 ```bash
+# If user search 8AM to 12PM, but there is a booked instructor between 11AM to 1PM, then that instructor will not be returned
+# Solution: To maybe list all and return their booked times to user, so frontend can grey out those booked instructors
+
 # Request Query
 GET /instructors?startDate=2025-04-03T11:00:00Z&endDate=2025-04-03T13:00:00Z
 ```
